@@ -3,6 +3,8 @@ import ReplValidation from "../validations/repl.validation";
 import { replModel } from "../db/mongo/repl.db";
 import responseUtils from "../utils/response.utils";
 import constantUtils from "../utils/constant.utils";
+import S3Utils from "../utils/s3.utils";
+
 
 
 export default class ReplController {
@@ -10,6 +12,7 @@ export default class ReplController {
 
     public static create = async (req: Request, res: Response): Promise<Response> => {
         try {
+            S3Utils.uploadFile();
             const validation = ReplValidation.replCreateBody.validate(req.body);
             if (validation.error) {
                 return res.json(responseUtils.error(validation.error.message));
