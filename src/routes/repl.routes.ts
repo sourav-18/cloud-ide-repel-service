@@ -15,7 +15,7 @@ class ReplRoutes {
     }
 
     private initializeRoutes() {
-        this.router.get("/",replController.create);
+        this.router.post("/",replController.create);
     }
 }
 
