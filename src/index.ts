@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-dotenv.config();
 import serverEnv from "./config/serverEnv.config";
 import express, { Request, Response, NextFunction } from "express";
 import mainRoutes from "./routes/main.routes";
@@ -37,6 +35,7 @@ app.use((req: Request, res: Response) => {
     console.log("invalid Url: ", req.originalUrl)
     return;
 })
+
 
 app.listen(serverEnv.SERVER_PORT, () => {
     console.log(`service is running on port ${serverEnv.SERVER_PORT}`);

@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --exec tsx  src/index.ts"
+    "dev": "nodemon --exec tsx src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/sourav-18/cloud-ide-repel-service#readme",
   "dependencies": {
+    "@aws-sdk/lib-storage": "^3.876.0",
     "aws-sdk": "^2.1692.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",

@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 const serverEnv = {
     //server
     SERVER_ENVIRONMENT: process.env.SERVER_ENVIRONMENT,

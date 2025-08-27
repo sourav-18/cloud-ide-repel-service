@@ -2,13 +2,15 @@ import AWS from "aws-sdk";
 import serverEnv from "../config/serverEnv.config";
 import PATH from 'path';
 import FS from 'fs';
+const { Upload } = require('@aws-sdk/lib-storage');
 
- class S3Utils {
-    private readonly s3: AWS.S3;
+
+class S3Utils {
+    private readonly S3: AWS.S3;
     private static instance: S3Utils;
 
     private constructor() {
-        this.s3 = this.initS3();
+        this.S3 = this.initS3();
     }
 
     private initS3(): AWS.S3 {
@@ -19,21 +21,37 @@ import FS from 'fs';
         });
     }
 
-    public uploadFile() {
-        const fileContent = FS.createReadStream(PATH.resolve("/src/fils/op.js"));
+    public uploadFile(fileLocalPath: string, fileS3Path: string) {
+        const fileContent = FS.createReadStream(fileLocalPath);
         const params = {
             Bucket: serverEnv.S3_BUCKET_NAME!,
-            Key: 'base-code-files',
+            Key: fileS3Path, // File name you want to save as in S3
             Body: fileContent
         };
 
-        this.s3.putObject(params, (err, data) => {
+        this.S3.putObject(params, (err, data) => {
             if (err) {
                 console.error("Error uploading file: ", err);
             } else {
                 console.log("File uploaded successfully: ", data);
             }
         });
+
+    }
+
+    public async uploadFolder(localFolderPath: string, s3FolderPath: string) {
+        const files = await FS.promises.readdir(localFolderPath, { withFileTypes: true});
+        for (const file of files) {
+            const fileLocalPath = PATH.join(localFolderPath, file.name);
+            const fileS3Path = PATH.join(s3FolderPath, file.name).replace(/\\/g, "/"); 
+            if (file.isFile()) {
+                this.uploadFile(fileLocalPath, fileS3Path);
+            }
+            else if (file.isDirectory()) {
+                await this.uploadFolder(PATH.join(localFolderPath, file.name), PATH.join(s3FolderPath, file.name));
+            }
+
+        }
 
     }
 
@@ -47,3 +65,8 @@ import FS from 'fs';
 }
 
 export default S3Utils.getInstance();
+
+
+
+
+
